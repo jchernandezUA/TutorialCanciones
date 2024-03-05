@@ -8,6 +8,7 @@ from src.modelo.declarative_base import Session
 from src.modelo.interprete import Interprete
 
 
+
 class InterpreteTestCase(unittest.TestCase):
 
     def setUp(self):
