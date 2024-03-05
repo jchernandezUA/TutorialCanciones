@@ -1,0 +1,28 @@
+name: Desarrollo - Verificación de Pruebas
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  pruebas:
+    name: Verificar Pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del Repositorio
+      uses: actions/checkout@v2
+
+    - name: Configurar Entorno de Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+
+    - name: Instalar Dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Correr Pruebas
+      run: python -m unittest discover -v tests/
