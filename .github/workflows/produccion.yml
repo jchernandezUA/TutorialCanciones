@@ -33,6 +33,7 @@ jobs:
     - name: Mezclar con Rama Main
       if: success()
       run: |
+        git fetch --all
         git branch
         git checkout main
         git merge --no-ff release/${{ github.run_number }}
