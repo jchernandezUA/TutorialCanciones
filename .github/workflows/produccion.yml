@@ -1,0 +1,42 @@
+name: Producción - Crear Rama Release y Mezclar con Main
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  release:
+    name: Crear Rama Release y Mezclar con Main
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del Repositorio
+      uses: actions/checkout@v2
+
+    - name: Crear Rama Release
+      run: |
+        git switch -c release/${{ github.run_number }}
+        git push -f -u origin release/${{ github.run_number }}
+      
+
+    - name: Configurar Entorno de Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+
+    #- name: Mezclar con Rama Main
+     # if: success()
+     # run: |
+      #  git fetch origin main:main
+       # git switch main
+        #git pull origin main
+      #  git switch release/${{ github.run_number }}
+       # git merge main
+       # git push origin main
+    - name: Mezcla rama1 -> rama2
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: release/${{ github.run_number }}
+        target-branch: main
