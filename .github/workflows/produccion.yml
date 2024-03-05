@@ -6,8 +6,8 @@ on:
       - develop
 
 jobs:
-  release:
-    name: Crear Rama Release y Mezclar con Main
+  setup-release:
+    name: Crear Rama Release
     runs-on: ubuntu-latest
 
     steps:
@@ -19,21 +19,33 @@ jobs:
         git switch -c release/${{ github.run_number }}
         git push -f -u origin release/${{ github.run_number }}
       
+  test:
+    name: Verificación de pruebas
+    runs-on: ubuntu-latest
 
-    - name: Configurar Entorno de Python
+    steps:
+    - name: Checkout de repositorio
+      uses: actions/checkout@v2
+    - name: Configuración de entorno de python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.7'
+          python-version: '3.7'
+    - name: Instalación de librerías y dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Correr pruebas
+      id: correr-pruebas
+      run: python -m unittest discover -s tests
 
-    #- name: Mezclar con Rama Main
-     # if: success()
-     # run: |
-      #  git fetch origin main:main
-       # git switch main
-        #git pull origin main
-      #  git switch release/${{ github.run_number }}
-       # git merge main
-       # git push origin main
+  release-version:
+    name: Crear Rama Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del Repositorio
+      uses: actions/checkout@v2
+
     - name: Mezcla release -> main
       uses: tukasz/direct-merge-action@master
       with:
