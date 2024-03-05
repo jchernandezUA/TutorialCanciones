@@ -21,12 +21,13 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.7'
-    - name: Depuración
+    - name: Fetch
       run: |
-        echo "GitHub Token: ${{ secrets.GITHUB_TOKEN }}"
+        git fetch --all
+        git switch main
+        git pull origin main
+        git switch release/${{ github.run_number }}
         git branch -a
-        git log --oneline --graph
-
     - name: Mezclar con Rama Main
       if: success()
       uses: tukasz/direct-merge-action@master
