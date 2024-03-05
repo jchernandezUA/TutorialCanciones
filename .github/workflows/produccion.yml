@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Crear Rama Release
-      run: git checkout -b release/${{ github.run_number }}
+      run: git switch -b release/${{ github.run_number }}
 
     - name: Configurar Entorno de Python
       uses: actions/setup-python@v2
@@ -25,9 +25,7 @@ jobs:
     - name: Mezclar con Rama Main
       if: success()
       run: |
-        git fetch --all
-        git branch
+        git fetch origin main:main  # Asegúrate de tener la última versión de 'main'
         git checkout main
-        git pull origin main
-        git merge --no-ff release/${{ github.run_number }}
+        git merge --no-ff release/${{ github.run_number }} --allow-unrelated-histories
         git push origin main
