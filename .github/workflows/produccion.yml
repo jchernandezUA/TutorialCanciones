@@ -1,4 +1,4 @@
-name: Producción - Crear Rama Release y Mezclar con Master
+name: Producción - Crear Rama Release y Mezclar con Main
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Crear Rama Release y Mezclar con Master
+    name: Crear Rama Release y Mezclar con Main
     runs-on: ubuntu-latest
 
     steps:
@@ -30,11 +30,10 @@ jobs:
     - name: Correr Pruebas
       run: python -m unittest discover -v tests/
 
-    - name: Mezclar con Rama Master
+    - name: Mezclar con Rama Main
       if: success()
       run: |
-        git checkout master
+        git branch
+        git checkout main
         git merge --no-ff release/${{ github.run_number }}
-        git push origin master
-      
-      
+        git push origin main
