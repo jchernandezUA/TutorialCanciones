@@ -1,28 +1,78 @@
 name: CI
 
-# Controls when the action will run. 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  job1:
-    name: Pruebas
+  pruebas:
+    name: Desarrollo - Verificación de Pruebas
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout de repositorio
+    - name: Checkout del Repositorio
       uses: actions/checkout@v2
-    - name: Configuración de entorno de python
+
+    - name: Configurar Entorno de Python
       uses: actions/setup-python@v2
       with:
-          python-version: '3.7'
-    - name: Instalación de librerías y dependencias
+        python-version: '3.7'
+
+    - name: Instalar Dependencias
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Correr pruebas
-      id: correr-pruebas
-      run: python -m unittest discover -s tests
+
+    - name: Correr Pruebas
+      run: python -m unittest discover -v tests/
+
+  release:
+    name: Producción - Crear Rama Release y Mezclar con Master
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del Repositorio
+      uses: actions/checkout@v2
+
+    - name: Verificar Palabra Clave "RELEASE"
+      run: |
+        if [[ $(git log --format=%B -n 1 ${{ github.sha }}) == *"RELEASE"* ]]; then
+          echo "Se ha encontrado la palabra clave 'RELEASE' en el commit."
+        else
+          echo "No se ha encontrado la palabra clave 'RELEASE' en el commit. Saliendo."
+          exit 0
+        fi
+
+    - name: Verificar Existencia de Rama Release
+      run: |
+        if git show-ref --verify --quiet "refs/heads/release"; then
+          echo "La rama 'release' ya existe. Cambiando a la rama existente."
+          git checkout release
+        else
+          echo "La rama 'release' no existe. Creando nueva rama 'release'."
+          git checkout -b release/${{ github.run_number }}
+        fi
+
+    - name: Configurar Entorno de Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+
+    - name: Instalar Dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Correr Pruebas
+      run: python -m unittest discover -v tests/
+
+    - name: Mezclar con Rama Master
+      if: success()
+      run: |
+        git checkout master
+        git merge --no-ff release
+        git push origin master
