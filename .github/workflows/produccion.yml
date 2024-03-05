@@ -29,6 +29,6 @@ jobs:
         git switch main
         git pull origin main
         git switch release/${{ github.run_number }}
-        git log --all --decorate --oneline --graph
-        git merge --no-ff release/${{ github.run_number }}
+        git push origin release/${{ github.run_number }}
+        git merge main
         git push origin main
