@@ -16,11 +16,10 @@ jobs:
     
     - name: Merge a rama de develop
       run: |
-        git fetch --all
-        git branch -l
+        git fetch origin ${{ github.event.pull_request.head.ref }}
         git checkout develop
         git pull origin develop
-        git pull origin ${{ github.ref }}
+        git merge --no-ff --no-commit ${{ github.event.pull_request.head.ref }}
 
     - name: Configurar Entorno de Python
       uses: actions/setup-python@v2
