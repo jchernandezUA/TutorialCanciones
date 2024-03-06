@@ -10,3 +10,4 @@ class Interprete(Base):
     nombre = Column(String)
     texto_curiosidades = Column(String)
     cancion = Column(Integer, ForeignKey('cancion.id'))
+
