@@ -17,6 +17,7 @@ jobs:
     - name: Merge a rama de develop
       run: |
         git fetch origin ${{ github.event.pull_request.head.ref }}
+        git fetch --all
         git checkout develop
         git pull origin develop
         git merge --no-ff --no-commit ${{ github.event.pull_request.head.ref }}
