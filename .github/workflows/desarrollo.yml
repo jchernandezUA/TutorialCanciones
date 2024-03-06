@@ -16,6 +16,8 @@ jobs:
     
     - name: Merge a rama de develop
       run: |
+        git fetch --all
+        git branch -l
         git checkout develop
         git pull origin develop
         git merge ${{ github.ref }}
