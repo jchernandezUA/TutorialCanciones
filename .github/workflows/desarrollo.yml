@@ -24,7 +24,6 @@ jobs:
         git pull origin develop
         git switch ${{ github.event.pull_request.head.ref }}
         git rebase develop
-        git log --oneline
 
     - name: Configurar Entorno de Python
       uses: actions/setup-python@v2
@@ -37,4 +36,6 @@ jobs:
         pip install -r requirements.txt
 
     - name: Correr Pruebas
-      run: python -m unittest discover -v tests/
+      run: |
+        git log --oneline
+        python -m unittest discover -v tests/
